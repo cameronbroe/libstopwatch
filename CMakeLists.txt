@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(cpp_shared_lib_template)
+project(libstopwatch)
 
 # Set basic options
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -12,6 +12,7 @@ include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
+target_link_libraries(${PROJECT_NAME} pthread)
 
 # Setup Catch2
 file(GLOB TEST_SOURCES "tests/*.cpp")
