@@ -6,7 +6,7 @@
 
 #include "../include/stopwatch.h"
 
-void libstopwatch::Stopwatch::tick() {
+void stopwatch::Stopwatch::tick() {
     while(this->m_running) {
         if(this->m_tasks.count(this->m_tick) > 0) {
             auto task = this->m_tasks[this->m_tick];
@@ -17,27 +17,27 @@ void libstopwatch::Stopwatch::tick() {
     }
 }
 
-void libstopwatch::Stopwatch::start() {
-    this->m_thread = std::thread(&libstopwatch::Stopwatch::tick, this);
+void stopwatch::Stopwatch::start() {
+    this->m_thread = std::thread(&stopwatch::Stopwatch::tick, this);
     this->m_running = true;
     this->m_thread.detach();
 }
 
-libstopwatch::Stopwatch::Stopwatch() {
+stopwatch::Stopwatch::Stopwatch() {
     this->m_running = false;
     this->m_tick = 0;
 }
 
-void libstopwatch::Stopwatch::stop() {
+void stopwatch::Stopwatch::stop() {
     this->m_running = false;
     this->m_tick = 0;
 }
 
-void libstopwatch::Stopwatch::reset() {
+void stopwatch::Stopwatch::reset() {
     this->stop();
     this->start();
 }
 
-void libstopwatch::Stopwatch::add_task(uint64_t timestamp, std::function<void()> task) {
-    this->m_tasks[timestamp] = task;
+void stopwatch::Stopwatch::add_task(uint64_t timestamp, std::function<void()> task) {
+    this->m_tasks[timestamp] = std::move(task);
 }

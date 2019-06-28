@@ -10,7 +10,7 @@
 #include <functional>
 #include <atomic>
 
-namespace libstopwatch {
+namespace stopwatch {
 
     class Stopwatch {
     private:
@@ -22,7 +22,7 @@ namespace libstopwatch {
         void tick();
     public:
         Stopwatch();
-        ~Stopwatch() {}
+        ~Stopwatch() = default;
 
         void start();
         void stop();

@@ -2,18 +2,30 @@
 #include <iostream>
 #include "stopwatch.h"
 
-TEST_CASE("3: Testing stopwatch", "[multi-file:3]") {
-    auto print_hello = []() { std::cout << "Hello at 5 seconds" << std::endl; };
-    auto print_foobar = []() { std::cout << "Hello at 10 seconds" << std::endl; };
-    libstopwatch::Stopwatch stopwatch;
-    stopwatch.add_task(5, print_hello);
-    stopwatch.add_task(10, print_foobar);
-    stopwatch.start();
-    int i = 0;
-    for(i = 0; i < 10; i++) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "Foo" << std::endl;
+TEST_CASE("Testing stopwatch", "[multi-file:stopwatch]") {
+    stopwatch::Stopwatch stopwatch;
+
+    SECTION("should execute a task at 5 ticks") {
+        bool five_ticks_ran = false;
+        auto five_ticks = [&five_ticks_ran]() {
+            five_ticks_ran = true;
+        };
+        stopwatch.add_task(5, five_ticks);
+        stopwatch.start();
+        std::this_thread::sleep_for(std::chrono::seconds(6));
+        stopwatch.stop();
+        REQUIRE(five_ticks_ran);
     }
-    stopwatch.stop();
-    REQUIRE(true == true);
+
+    SECTION("should execute a task at 10 ticks") {
+        bool ten_ticks_ran = false;
+        auto ten_ticks = [&ten_ticks_ran]() {
+            ten_ticks_ran = true;
+        };
+        stopwatch.add_task(10, ten_ticks);
+        stopwatch.start();
+        std::this_thread::sleep_for(std::chrono::seconds(11));
+        stopwatch.stop();
+        REQUIRE(ten_ticks_ran);
+    }
 }
