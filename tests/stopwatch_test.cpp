@@ -2,7 +2,7 @@
 #include <iostream>
 #include "stopwatch.h"
 
-TEST_CASE("Testing stopwatch", "[multi-file:stopwatch]") {
+TEST_CASE("Testing single task stopwatch", "[multi-file:stopwatch]") {
     stopwatch::Stopwatch stopwatch;
 
     SECTION("should execute a task at 5 ticks") {
@@ -10,7 +10,7 @@ TEST_CASE("Testing stopwatch", "[multi-file:stopwatch]") {
         auto five_ticks = [&five_ticks_ran]() {
             five_ticks_ran = true;
         };
-        stopwatch.add_task(5, five_ticks);
+        stopwatch.add_single_task(5, five_ticks);
         stopwatch.start();
         std::this_thread::sleep_for(std::chrono::seconds(6));
         stopwatch.stop();
@@ -22,10 +22,26 @@ TEST_CASE("Testing stopwatch", "[multi-file:stopwatch]") {
         auto ten_ticks = [&ten_ticks_ran]() {
             ten_ticks_ran = true;
         };
-        stopwatch.add_task(10, ten_ticks);
+        stopwatch.add_single_task(10, ten_ticks);
         stopwatch.start();
         std::this_thread::sleep_for(std::chrono::seconds(11));
         stopwatch.stop();
         REQUIRE(ten_ticks_ran);
+    }
+}
+
+TEST_CASE("Testing recurring task stopwatch", "[multi-file:stopwatch]") {
+    stopwatch::Stopwatch stopwatch;
+
+    SECTION("should execute 5 times in 5 ticks") {
+        int tick_count = 0;
+        auto increment_tick = [&tick_count]() {
+            tick_count++;
+        };
+        stopwatch.add_recurring_task(1, increment_tick);
+        stopwatch.start();
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        stopwatch.stop();
+        REQUIRE(tick_count == 5);
     }
 }
